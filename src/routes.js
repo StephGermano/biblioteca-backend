@@ -11,10 +11,14 @@ routes.get("/", (req, res) => {
 // Client Routes
 routes.get("/client", clientController.get);
 routes.post("/client", clientController.createClient);
+routes.put("/clientUpdateContact", clientController.updateContact);
+routes.put("/clientUpdateEmail", clientController.updateEmail);
 
 // Books Routes
 routes.get("/book", bookController.get);
+routes.get("/bookRented", bookController.getBookRented);
 routes.post("/book", bookController.createBook);
+routes.put("/book", bookController.updateDailyValue);
 
 //Book Rent Routes
 routes.get("/rent", rentController.get);
