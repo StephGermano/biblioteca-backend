@@ -2,6 +2,23 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const moment = require("moment");
 
+async function switchRentBook(rentUpdate) {
+  const statusChange = await prisma.book.findUnique({
+    where: {
+      id: parseInt(rentUpdate),
+    },
+  });
+
+  statusChange.isRented = !statusChange.isRented;
+
+  const updateStatus = await prisma.book.update({
+    data: statusChange,
+    where: {
+      id: statusChange.id,
+    },
+  });
+}
+
 async function get(req, res) {
   res.json(
     await prisma.rent.findMany({
@@ -18,19 +35,7 @@ async function create(req, res) {
     data: req.body,
   });
 
-  const statusChange = await prisma.book.findUnique({
-    where: {
-      id: parseInt(req.body.bookId),
-    },
-  });
-
-  statusChange.isRented = !statusChange.isRented;
-  const updateRent = await prisma.book.update({
-    data: statusChange,
-    where: {
-      id: statusChange.id,
-    },
-  });
+  switchRentBook(req.body.bookId);
 
   res.json(rentBook);
 }
@@ -61,13 +66,7 @@ async function put(req, res) {
     },
   });
 
-  findBook.isRented = !findBook.isRented;
-  const updatedBook = await prisma.book.update({
-    data: findBook,
-    where: {
-      id: findBook.id,
-    },
-  });
+  switchRentBook(rent.bookId);
 
   res.json(updateRent);
 }

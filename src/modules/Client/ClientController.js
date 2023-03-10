@@ -13,4 +13,40 @@ async function createClient(req, res) {
   res.json(client);
 }
 
-module.exports = { get, createClient };
+async function updateContact(req, res) {
+  const client = await prisma.client.findUnique({
+    where: {
+      id: req.body.id,
+    },
+  });
+
+  client.contato = req.body.contato;
+  const update = await prisma.client.update({
+    data: client,
+    where: {
+      id: client.id,
+    },
+  });
+
+  res.json(update);
+}
+
+async function updateEmail(req, res) {
+  const client = await prisma.client.findUnique({
+    where: {
+      id: req.body.id,
+    },
+  });
+
+  client.email = req.body.email;
+  const update = await prisma.client.update({
+    data: client,
+    where: {
+      id: client.id,
+    },
+  });
+
+  res.json(update);
+}
+
+module.exports = { get, createClient, updateContact, updateEmail };
